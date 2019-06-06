@@ -1,46 +1,52 @@
 import matplotlib.pyplot as plt
 import torch
-from basic_unet import UNet
-from dataset import BratsDataset
+from testnet.unet import UNet
+from testnet.dataset import TestnetDataset
 from torchvision import transforms
 from pathlib import Path
-import hdm
+import sys
+sys.path.append('../')
+from interpret_segmentation import hdm
+from skimage.feature import canny
+
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-model = UNet(in_channels=4, out_channels=1)
-state_dict = torch.load('models/3_basic_unet_flat_criterion_279_0.00000.pth')
+model = UNet(in_channels=1, out_channels=1)
+state_dict = torch.load('testnet/testnet.pth', map_location=device)
 model.load_state_dict(state_dict)
 model = model.to(device)
 transform = transforms.Compose([
     transforms.Normalize([0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5])
 ])
-dataset = BratsDataset(Path('data/processed/'), transform)
+dataset = TestnetDataset(Path('testnet/dataset/'), transform)
 
 
-sample = dataset.get_sample('Brats18_2013_17_1', 'L1')
+sample = dataset.get_sample('1')
 segment = sample['segment']
 image = sample['input']
 
 explainer = hdm.HausdorffDistanceMasks(240, 240)
-explainer.generate_masks(circle_size=15, offset=5, normalize=True)
+explainer.generate_masks(circle_size=25, offset=5, normalize=True)
 
 result = explainer.explain(model, image, segment, device)
 
-raw = result.circle_map(hdm.RAW)
-better = result.circle_map(hdm.BETTER_ONLY)
-worse = result.circle_map(hdm.WORSE_ONLY)
+raw = result.circle_map(hdm.RAW, color_map='Blues')
+better = result.circle_map(hdm.BETTER_ONLY, color_map='Greens')
+worse = result.circle_map(hdm.WORSE_ONLY, color_map='Reds')
 
-plt.imshow(image, cmap='gray')
-plt.imshow(raw, alpha=0.8, cmap='Blues')
+edges = canny(image[0].numpy(), sigma=0.01)
+
+plt.imshow(raw)
+plt.imshow(edges, alpha=0.5, cmap='gray_r')
 plt.suptitle(f'Raw')
-plt.show()
+plt.savefig('hdm_raw.png')
 
-plt.imshow(image, cmap='gray')
-plt.imshow(better, alpha=0.8, cmap='Greens')
+plt.imshow(better)
+plt.imshow(edges, alpha=0.5, cmap='gray_r')
 plt.suptitle(f'Better')
-plt.show()
+plt.savefig('hdm_better.png')
 
-plt.imshow(image, cmap='gray')
-plt.imshow(worse, alpha=0.8, cmap='Reds')
+plt.imshow(worse)
+plt.imshow(edges, alpha=0.5, cmap='gray_r')
 plt.suptitle(f'Worse')
-plt.show()
+plt.savefig('hdm_worse.png')
