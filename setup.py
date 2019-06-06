@@ -7,7 +7,7 @@ setuptools.setup(
     name="interpret_segmentation",
     version="0.0.1",
     author="Fabio Anderegg",
-    author_email="author@example.com",
+    author_email="andef4@bfh.ch",
     description="Interpreing image segmentation models",
     long_description=long_description,
     long_description_content_type="text/markdown",
