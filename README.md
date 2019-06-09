@@ -17,6 +17,7 @@ Please install pytorch and torchvision manually as described on https://pytorch.
 
 - Install interpret-segmentation
 - Clone GitHub repository: `git clone https://github.com/andef4/interpret-segmentation`
+- Install additional dependencies: `pip install scikit-image requests`
 
 The example uses the "testnet" dataset, a dataset built to show how interpret-segmentation works.
 You can download the dataset and a pretrained model by running the `examples/testnet/download.py` script,

@@ -22,6 +22,7 @@ setuptools.setup(
         "Pillow",
         "matplotlib",
         "numpy",
+        "scipy",
     ],
     extras_require={
         'dev': [
