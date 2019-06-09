@@ -34,6 +34,7 @@ if __name__ == '__main__':
     with open(temp_file, 'wb') as f:
         shutil.copyfileobj(response.raw, f)
     tar = tarfile.open(temp_file)
+    tar.extractall(path)
     tar.close()
     os.rename(path / 'testnet', path / 'dataset')
     temp_file.unlink()
