@@ -1,7 +1,9 @@
+import os
+import sys
+import inspect
 from PIL import Image, ImageDraw
 import random
 from pathlib import Path
-import shutil
 import numpy as np
 
 
@@ -67,9 +69,11 @@ def generate_image(path):
 
 
 if __name__ == '__main__':
-    OUTPUT = Path('dataset')
+    path = Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
+    OUTPUT = path / 'dataset'
     if OUTPUT.exists():
-        shutil.rmtree(OUTPUT)
+        print('dataset/ directory already exists')
+        sys.exit(1)
     OUTPUT.mkdir()
     for i in range(1000):
         image_folder = OUTPUT / str(i)
