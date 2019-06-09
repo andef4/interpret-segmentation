@@ -1,3 +1,30 @@
+from interpret_segmentation.rise import SegmentationRISE
+import matplotlib.pyplot as plt
+import torch
+from testnet.unet import UNet
+from testnet.dataset import TestnetDataset
+from torchvision import transforms
+from pathlib import Path
+
+
+batch_size = 1
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+model = UNet(in_channels=1, out_channels=1)
+state_dict = torch.load('testnet/testnet.pth', map_location=device)
+model.load_state_dict(state_dict)
+model = model.to(device)
+transform = transforms.Compose([
+    transforms.Normalize([0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5])
+])
+dataset = TestnetDataset(Path('testnet/dataset/'), transform)
+
+sample = dataset.get_sample('1')
+segment = sample['segment']
+segment = segment.squeeze()
+image = sample['input'].to(device)
+output = model(image)
+output = output.detach().cpu().squeeze().numpy()
+output = (output > output.mean())
 
 masks_path = Path('rise_masks.npy')
 explainer = SegmentationRISE(model, (240, 240), batch_size)
@@ -10,10 +37,14 @@ saliencies = None
 with torch.set_grad_enabled(False):
     saliencies = explainer(image)
 
+print('Ground truth')
+plt.imshow(segment)
+plt.show()
 
-# In[5]:
+print('Binarized network output')
+plt.imshow(output)
+plt.show()
 
-plot_image_row([segment, output], labels=['Ground truth', 'Binarized network output'])
 
 print('Saliency map, Saliency map overlayed on binarized network output (max)')
 
