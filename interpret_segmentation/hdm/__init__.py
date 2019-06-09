@@ -103,7 +103,7 @@ class HausdorffDistanceMasks:
         hd2 = directed_hausdorff(segment, output)[0]
         return np.max([hd1, hd2])
 
-    def apply_mask(self, mask, image):
+    def apply_mask(self, image, mask):
         return torch.min(image, mask)
 
     def explain(self, model, image, segment, device, channel=-1):
