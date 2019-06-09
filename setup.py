@@ -18,4 +18,16 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    install_requires=[
+        "Pillow",
+        "matplotlib",
+        "numpy",
+    ],
+    extras_require={
+        'dev': [
+            'pytest',
+            'flake8',
+            'pre-commit',
+        ]
+    }
 )
