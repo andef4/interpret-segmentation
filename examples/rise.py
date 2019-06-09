@@ -21,13 +21,13 @@ dataset = TestnetDataset(Path('testnet/dataset/'), transform)
 sample = dataset.get_sample('1')
 segment = sample['segment']
 segment = segment.squeeze()
-image = sample['input'].to(device)
+image = sample['input'].unsqueeze(0).to(device)
 output = model(image)
 output = output.detach().cpu().squeeze().numpy()
 output = (output > output.mean())
 
 masks_path = Path('rise_masks.npy')
-explainer = SegmentationRISE(model, (240, 240), batch_size)
+explainer = SegmentationRISE(model, (240, 240), device, batch_size)
 if not masks_path.exists():
     explainer.generate_masks(N=3000, s=8, p1=0.1, savepath=masks_path)
 else:
@@ -37,15 +37,6 @@ saliencies = None
 with torch.set_grad_enabled(False):
     saliencies = explainer(image)
 
-print('Ground truth')
-plt.imshow(segment)
-plt.show()
-
-print('Binarized network output')
-plt.imshow(output)
-plt.show()
-
-
 print('Saliency map, Saliency map overlayed on binarized network output (max)')
 
 merged = torch.cat(saliencies)
@@ -54,7 +45,7 @@ _, plots = plt.subplots(1, 2, figsize=(10, 5))
 plots[0].imshow(maxed.cpu(), cmap='jet')
 plots[1].imshow(output)
 plots[1].imshow(maxed.cpu(), cmap='jet', alpha=0.5)
-plt.show()
+plt.savefig('rise_max.png')
 
 print('Saliency map, Saliency map overlayed on binarized network output (mean)')
 mean = torch.mean(merged, dim=0)
@@ -62,4 +53,4 @@ _, plots = plt.subplots(1, 2, figsize=(10, 5))
 plots[0].imshow(mean.cpu(), cmap='jet')
 plots[1].imshow(output)
 plots[1].imshow(mean.cpu(), cmap='jet', alpha=0.5)
-plt.show()
+plt.savefig('rise_mean.png')

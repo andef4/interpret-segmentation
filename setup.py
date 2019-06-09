@@ -23,6 +23,7 @@ setuptools.setup(
         "matplotlib",
         "numpy",
         "scipy",
+        "tqdm",
     ],
     extras_require={
         'dev': [
