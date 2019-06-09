@@ -41,6 +41,7 @@ class RISE(nn.Module):
         self.masks = torch.from_numpy(self.masks).float().cuda()
         self.N = self.masks.shape[0]
 
+
 """
     def forward(self, x):
         mask_count = self.N
@@ -65,43 +66,45 @@ class RISE(nn.Module):
         sal /= mask_count
         return sal
 """
-    def forward(self, x):
-        mask_count = self.N
-        _, _, H, W = x.size()
 
-        # generate new images by putting mask on top of original image
-        stack = torch.mul(self.masks, x.data)
 
-        output = self.model(x).squeeze()
-        output = (output > output.mean())
+def forward(self, x):
+    mask_count = self.N
+    _, _, H, W = x.size()
 
-        pixels = []
-        for x in range(output.shape[0]):
-            for y in range(output.shape[1]):
-                if output[x][y]:
-                    pixels.append((x, y))
+    # generate new images by putting mask on top of original image
+    stack = torch.mul(self.masks, x.data)
 
-        pixels_per_batch = 1000
-        saliencies = []
-        for i in range(0, len(pixels), pixels_per_batch):
-            current_pixels = pixels[i:i+pixels_per_batch]
+    output = self.model(x).squeeze()
+    output = (output > output.mean())
 
-            # run generated images through the model
-            p = []
-            for i in range(0, mask_count, self.gpu_batch):
-                output_mask = self.model(stack[i:min(i + self.gpu_batch, mask_count)])
-                pixel_classes = []
-                for x, y in current_pixels:
-                    pixel_classes.append(output_mask[0][x][y])
-                p.append(torch.tensor([pixel_classes]))
-            p = torch.cat(p)
+    pixels = []
+    for x in range(output.shape[0]):
+        for y in range(output.shape[1]):
+            if output[x][y]:
+                pixels.append((x, y))
 
-            # Number of classes
-            CL = p.size(1)
+    pixels_per_batch = 1000
+    saliencies = []
+    for i in range(0, len(pixels), pixels_per_batch):
+        current_pixels = pixels[i:i+pixels_per_batch]
 
-            sal = torch.matmul(p.data.transpose(0, 1), self.masks.view(mask_count, H * W))
+        # run generated images through the model
+        p = []
+        for i in range(0, mask_count, self.gpu_batch):
+            output_mask = self.model(stack[i:min(i + self.gpu_batch, mask_count)])
+            pixel_classes = []
+            for x, y in current_pixels:
+                pixel_classes.append(output_mask[0][x][y])
+            p.append(torch.tensor([pixel_classes]))
+        p = torch.cat(p)
 
-            sal = sal.view((CL, H, W))
-            sal /= mask_count
-            saliencies.append(sal)
-        return saliencies
+        # Number of classes
+        CL = p.size(1)
+
+        sal = torch.matmul(p.data.transpose(0, 1), self.masks.view(mask_count, H * W))
+
+        sal = sal.view((CL, H, W))
+        sal /= mask_count
+        saliencies.append(sal)
+    return saliencies

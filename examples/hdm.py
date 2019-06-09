@@ -1,12 +1,10 @@
+from interpret_segmentation import hdm
 import matplotlib.pyplot as plt
 import torch
 from testnet.unet import UNet
 from testnet.dataset import TestnetDataset
 from torchvision import transforms
 from pathlib import Path
-import sys
-sys.path.append('../')
-from interpret_segmentation import hdm
 from skimage.feature import canny
 
 

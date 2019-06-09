@@ -6,7 +6,6 @@ import shutil
 import gzip
 import tarfile
 import sys
-import tempfile
 
 
 if __name__ == '__main__':
@@ -16,7 +15,8 @@ if __name__ == '__main__':
     if out_file.exists():
         print('testnet.pth already exists')
         sys.exit(1)
-    response = requests.get('https://github.com/andef4/interpret-segmentation/releases/download/v1/testnet.pth.gz', stream=True)
+    response = requests.get(
+        'https://github.com/andef4/interpret-segmentation/releases/download/v1/testnet.pth.gz', stream=True)
     temp_file = path / 'testnet.pth.gz'
     if temp_file.exists():
         temp_file.unlink()
@@ -26,8 +26,9 @@ if __name__ == '__main__':
         shutil.copyfileobj(fin, fout)
     temp_file.unlink()
 
-    response = requests.get('https://github.com/andef4/interpret-segmentation/releases/download/v1/testnet.tar.gz', stream=True)
-    temp_file = path / 'testnet.tar.gz' 
+    response = requests.get(
+        'https://github.com/andef4/interpret-segmentation/releases/download/v1/testnet.tar.gz', stream=True)
+    temp_file = path / 'testnet.tar.gz'
     if temp_file.exists():
         temp_file.unlink()
     with open(temp_file, 'wb') as f:

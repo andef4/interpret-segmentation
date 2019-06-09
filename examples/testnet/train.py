@@ -1,11 +1,6 @@
-from torchvision import transforms
-import torch
-from PIL import Image
-from pathlib import Path
 import torch
 from torch import nn
 from torch import optim
-import os
 
 from dataset import load_dataset
 from training_loop import train_model
