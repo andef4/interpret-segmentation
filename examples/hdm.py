@@ -24,7 +24,7 @@ segment = sample['segment']
 image = sample['input']
 
 explainer = hdm.HausdorffDistanceMasks(240, 240)
-explainer.generate_masks(circle_size=25, offset=5, normalize=True)
+explainer.generate_masks(circle_size=25, offset=5)
 
 result = explainer.explain(model, image, segment, device)
 
