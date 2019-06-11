@@ -11,6 +11,10 @@ WORSE_ONLY = 3  # only return points which increase the distance when convered
 
 
 class HDMResult:
+    """
+    Result class for the Hausdorff Distance masks algorithm.
+    Instanced by HausdorffDistanceMasks class.
+    """
     def __init__(self, distances, baseline, image_width, image_height,
                  circle_size, offset):
         self.results = distances
@@ -21,6 +25,9 @@ class HDMResult:
         self.offset = offset
 
     def distances(self, result_type):
+        """
+        distances method
+        """
         if result_type == RAW:
             return self.results
         elif result_type == BETTER_ONLY:
@@ -31,6 +38,9 @@ class HDMResult:
             raise ValueError('Invalid result_type, only hdm.RAW, hdm.BETTER_ONLY and hdm.WORSE_ONLY are supported.')
 
     def circle_map(self, result_type, color_map='Reds'):
+        """
+        circle_map method
+        """
         distances = self.distances(result_type)
         normalized = distances - distances.min()
         normalized = normalized / normalized.max()
@@ -65,11 +75,20 @@ class HDMResult:
 
 
 class HausdorffDistanceMasks:
+    """
+    HausdorffDistanceMasks class
+    """
     def __init__(self, image_width, image_height):
+        """
+        constructor
+        """
         self.width = image_width
         self.height = image_height
 
     def generate_masks(self, circle_size, offset, normalize=False):
+        """
+        generate_masks method
+        """
         self.circle_size = circle_size
         self.offset = offset
         self.x_count = int(self.width / offset)
@@ -104,9 +123,17 @@ class HausdorffDistanceMasks:
         return np.max([hd1, hd2])
 
     def apply_mask(self, image, mask):
+        """
+        Apply a mask (a 2D pytorch tensor) to an image.
+        By default, this does a `torch.min(image, mask)`, but can be overwritten to do something else.
+        """
         return torch.min(image, mask)
 
     def explain(self, model, image, segment, device, channel=-1):
+        """
+        Explain a single instance
+        Returns a @HDMResult instance
+        """
         assert len(image.shape) == 3
         assert image.shape[1] == self.width
         assert image.shape[2] == self.height

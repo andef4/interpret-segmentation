@@ -30,6 +30,7 @@ setuptools.setup(
             'pytest',
             'flake8',
             'pre-commit',
+            'sphinx',
         ]
     }
 )
