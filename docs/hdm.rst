@@ -1,6 +1,15 @@
 ========================
 Hausdorff Distance Masks
 ========================
+
+Introduction
+------------
+
+How does it work?
+-----------------
+
+Example
+-------
 .. code-block:: python
 
     from interpret_segmentation import hdm
@@ -40,7 +49,8 @@ Hausdorff Distance Masks
     # ...or save to disk
     raw.save('raw.png')
 
-
+Class documentation
+-------------------
 .. autoclass:: interpret_segmentation.hdm.HausdorffDistanceMasks
    :members:
 

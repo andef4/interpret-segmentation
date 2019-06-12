@@ -2,8 +2,8 @@
 RISE
 ====
 
-Intro
------
+Introduction
+------------
 RISE (Randomized Input Sampling for Explanation) is a black box interpretability method originally built for image classification tasks.
 The original paper is available
 here: https://arxiv.org/abs/1806.07421.
