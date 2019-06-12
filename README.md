@@ -3,27 +3,13 @@
 A one-stop shop for the interpretability of image segmentation models.
 This code was extracted from my bachelors thesis: https://github.com/andef4/thesis-code
 
-Available algorithms
+Available algorithms:
 
 - Hausdorff Distance Masks
 - RISE
 
-## Installation
-
-All dependencies except pytorch and torchvisison are installed automatically.
-Please install pytorch and torchvision manually as described on https://pytorch.org/get-started/locally/.
-
-# Howto run example
-
-- Install interpret-segmentation
-- Clone GitHub repository: `git clone https://github.com/andef4/interpret-segmentation`
-- Install additional dependencies: `pip install scikit-image requests`
-
-The example uses the "testnet" dataset, a dataset built to show how interpret-segmentation works.
-You can download the dataset and a pretrained model by running the `examples/testnet/download.py` script,
-or generate and train the dataset yourself with the `examples/testnet/generate.py` and `examples/testnet/train.py` scripts.
-
-The scripts `examples/hdm.py` and `examples/rise.py` show how to use this library. The generated visualizations are saved in the `examples/` directory.
+## Documentation
+The documentation is available on Read the Docs: https://interpret-segmentation.readthedocs.io/en/latest/.
 
 # Development
 
