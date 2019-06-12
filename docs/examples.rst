@@ -20,3 +20,4 @@ The run one of the example scripts:
 * ``python3 examples/rise.py``
 
 Both scripts generate PNG visualizations in the ``examples`` directory.
+The runtime of the scripts are around 30-60 seconds on a current generation high-end graphics card (GeForce 1080 Ti/RTX 2080).
