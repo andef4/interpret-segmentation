@@ -21,7 +21,7 @@ project = 'interpret-segmentation'
 copyright = '2019, Fabio Anderegg'
 author = 'Fabio Anderegg'
 
-master_doc = 'contents'
+master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------
 
