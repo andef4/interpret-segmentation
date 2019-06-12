@@ -22,9 +22,6 @@ sample = dataset.get_sample('1')
 segment = sample['segment']
 segment = segment.squeeze()
 image = sample['input'].unsqueeze(0).to(device)
-output = model(image)
-output = output.detach().cpu().squeeze().numpy()
-output = (output > output.mean())
 
 masks_path = Path('rise_masks.npy')
 explainer = SegmentationRISE(model, (240, 240), device, batch_size)
