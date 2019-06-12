@@ -24,12 +24,21 @@ RISE was built for image classification tasks. To make it work with segmentation
 segment as its own class. We let RISE generate a saliency map for every one of these pixels and then merge the
 generated saliency maps. Currently, the RISEResult class supports two merge methods: ``max()`` and ``mean()``.
 
+.. figure:: images/rise_max.png
+   :scale: 100 %
+
+   Saliency map generated using the max function overlaid on a testnet input image.
+
+.. figure:: images/rise_mean.png
+   :scale: 100 %
+
+   Saliency map generated using the mean function overlaid on a testnet input image.
 
 Example
 -------
 .. code-block:: python
 
-    from interpret_segmentation import hdm
+    from interpret_segmentation.rise import SegmentationRISE
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -46,7 +55,7 @@ Example
     image = ...
 
     # initialize the explainer with image width and height
-    explainer = SegmentationRISE(model, (240, 240), device, batch_size)
+    explainer = SegmentationRISE(model, (240, 240), device)
 
     # load or generate RISE masks
     masks_path = Path('rise_masks.npy')

@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 class RISEResult:
     """
-    Instance returned by :func:`~interpret_segmentation.SegmentationRISE.forward`.
+    Instance returned by :func:`~interpret_segmentation.rise.SegmentationRISE.forward`.
     """
     def __init__(self, saliencies):
         self.saliencies = saliencies
@@ -58,7 +58,6 @@ class SegmentationRISE(nn.Module):
         :param s: Distance between mask lines
         :param p1: Cutoff where to set mask. Between 0 and 1.0, 1.0 means masks on the whole image, 0 means no masks.
         :param savepath: Where to save the masks after generation, path to .npy file.
-        :return:
         """
         cell_size = np.ceil(np.array(self.input_size) / s)
         up_size = (s + 1) * cell_size
@@ -86,7 +85,6 @@ class SegmentationRISE(nn.Module):
         Load masks saved by :func:`~interpret_segmentation.SegmentationRISE.generate_masks`.
 
         :param filepath:
-        :return:
         """
         self.masks = np.load(filepath)
         self.masks = torch.from_numpy(self.masks).float().to(self.device)
@@ -98,7 +96,7 @@ class SegmentationRISE(nn.Module):
         is never called directly and used as a Functor: ``explainer = SegmentationRISE(...); explainer(image)``.
 
         :param x: The input image as a 2D numpy array
-        :return:
+        :return: An instance of :class:`~interpret_segmentation.rise.RISEResult`
         """
         mask_count = self.N
         _, _, H, W = x.size()
