@@ -12,14 +12,6 @@ This code was extracted from the code of my bachelor thesis: https://github.com/
 The PDF of the thesis is available here: https://github.com/andef4/thesis-doc/releases/download/release/thesis.pdf.
 It contains detailed explanations of the methods used here.
 
-The following methods are currently implemented:
-
-.. toctree::
-   :maxdepth: 1
-
-   rise
-   hdm
-
 Installation
 ------------
 
@@ -32,21 +24,18 @@ Installation
 All dependencies except pytorch and torchvisison are installed automatically.
 Please install pytorch and torchvision manually as described on https://pytorch.org/get-started/locally/.
 
+Methods
+-------
+.. toctree::
+   :maxdepth: 2
+
+   rise
+   hdm
+
 Examples
 --------
-Examples how to use the two algorithms are provided in the
-`examples <https://github.com/andef4/interpret-segmentation/tree/master/examples>`_ subdirectory in the git repository.
-The examples use the testnet dataset, which was specifically built as a showcase for these algorithms.
-
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    examples
    testnet
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

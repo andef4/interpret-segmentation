@@ -55,3 +55,9 @@ html_theme = 'sphinx_rtd_theme'
 
 autodoc_mock_imports = ['torch', 'torchvision']
 autodoc_member_order = 'bysource'
+
+latex_elements = {
+    'extraclassoptions': 'openany,oneside',
+    'papersize': 'a4paper',
+    'printindex': '',
+}

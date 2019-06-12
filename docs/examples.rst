@@ -1,5 +1,5 @@
 ========
-Examples
+Overview
 ========
 
 The GitHub repository has an ``examples/`` folder which contains two Python scripts to show how to apply the methods
