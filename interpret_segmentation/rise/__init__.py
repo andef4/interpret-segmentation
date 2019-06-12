@@ -123,7 +123,7 @@ class SegmentationRISE(nn.Module):
             # run generated images through the model
             p = []
             for i in range(0, mask_count):
-                output_mask = self.model(stack[i:min(i, mask_count)])
+                output_mask = self.model(stack[i:min(i + 1, mask_count)])
                 pixel_classes = []
                 for x, y in current_pixels:
                     pixel_classes.append(output_mask[0][x][y])
