@@ -7,7 +7,10 @@ Welcome to interpret-segmentation's documentation!
 ==================================================
 
 A one-stop shop for the interpretability of image segmentation models.
-This code was extracted from my bachelors thesis: https://github.com/andef4/thesis-code
+This code was extracted from the code of my bachelor thesis: https://github.com/andef4/thesis-code.
+
+The PDF of the thesis is available here: https://github.com/andef4/thesis-doc/releases/download/release/thesis.pdf.
+It contains detailed explanations of the methods used here.
 
 The following methods are currently implemented:
 
