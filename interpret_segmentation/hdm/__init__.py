@@ -95,14 +95,22 @@ class HausdorffDistanceMasks:
     """
     def __init__(self, image_width, image_height):
         """
-        constructor
+        Initialize the explainer.
+
+        :param image_width: Input image width
+        :param image_height: Input image height
         """
         self.width = image_width
         self.height = image_height
 
     def generate_masks(self, circle_size, offset, normalize=False):
         """
-        generate_masks method
+        Generate the masks for the explainer. A circle_size of 15 pixels and an offset of 5 pixel
+        work good on a 240x240 image.
+
+        :param circle_size: How big the circle size on the mask is in pixels
+        :param offset: The distance in pixel between every drawn circle
+        :param normalize: Normalize generated masks to mean 0.5
         """
         self.circle_size = circle_size
         self.offset = offset
@@ -125,29 +133,26 @@ class HausdorffDistanceMasks:
                 row.append(tensor)
             self.masks.append(row)
 
-    def distance(self, model, image, segment, device):
+    def _distance(self, model, image, segment, device):
         batch = image.unsqueeze(0)
         batch = batch.to(device)
         output = model(batch)
         output = output.detach().cpu().numpy()[0]
         return self.calculate_distance(output, segment)
 
-    def calculate_distance(self, output, segment):
-        hd1 = directed_hausdorff(output, segment)[0]
-        hd2 = directed_hausdorff(segment, output)[0]
-        return np.max([hd1, hd2])
-
-    def apply_mask(self, image, mask):
-        """
-        Apply a mask (a 2D pytorch tensor) to an image.
-        By default, this does a `torch.min(image, mask)`, but can be overwritten to do something else.
-        """
-        return torch.min(image, mask)
-
     def explain(self, model, image, segment, device, channel=-1):
         """
-        Explain a single instance
-        Returns a @HDMResult instance
+        Explain a single instance with Hausdorff Distance masks.
+        The model needs to reside on the device given as a parameter to this method.
+
+        Returns a :class:`~interpret_segmentation.hdm.HDMResult` instance.
+
+        :param model: A PyTorch module
+        :param image: The input image to be explained (2D PyTorch tensor or numpy array)
+        :param segment: The ground truth segment (2D PyTorch tensor or numpy array)
+        :param device: A PyTorch device
+        :param channel: Channel on which the mask should be applied, -1 for all channels (default)
+        :return: An instance of :class:`~interpret_segmentation.hdm.HDMResult`
         """
         assert len(image.shape) == 3
         assert image.shape[1] == self.width
@@ -155,7 +160,7 @@ class HausdorffDistanceMasks:
 
         distances = np.zeros((self.y_count, self.x_count))
 
-        baseline = self.distance(model, image, segment, device)
+        baseline = self._distance(model, image, segment, device)
 
         for y_offset in range(self.y_count):
             for x_offset in range(self.x_count):
@@ -166,7 +171,7 @@ class HausdorffDistanceMasks:
                 else:
                     masked_image = image.clone()
                     masked_image[channel] = self.apply_mask(image[channel], mask)
-                distances[x_offset][y_offset] = self.distance(
+                distances[x_offset][y_offset] = self._distance(
                     model, masked_image, segment, device
                 )
         # we copy all the state variables into the result so
@@ -174,3 +179,27 @@ class HausdorffDistanceMasks:
         # which could be reused with different parameters/masks
         return HDMResult(distances, baseline, self.width, self.height,
                          self.circle_size, self.offset)
+
+    def apply_mask(self, image, mask):
+        """
+        Apply a mask on an image.
+        By default, this does a `torch.min(image, mask)`, but can be overwritten to do something else.
+
+        :param image: The input image, 2D numpy array
+        :param mask: The mask, 2D numpy array
+        :return:
+        """
+        return torch.min(image, mask)
+
+    def calculate_distance(self, output, segment):
+        """
+        Calculate the difference between the network output and the ground truth segment.
+        Default implementation is the Hausdorff distance, but this can be replaced by any other distance function.
+
+        :param output: Neural network output, 2D numpy array
+        :param segment: Ground truth segment, 2D numpy array
+        :return: A number representing the distance between output and segment
+        """
+        hd1 = directed_hausdorff(output, segment)[0]
+        hd2 = directed_hausdorff(segment, output)[0]
+        return np.max([hd1, hd2])

@@ -7,7 +7,6 @@ from torchvision import transforms
 from pathlib import Path
 
 
-batch_size = 1
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = UNet(in_channels=1, out_channels=1)
 state_dict = torch.load('testnet/testnet.pth', map_location=device)
@@ -24,7 +23,7 @@ segment = segment.squeeze()
 image = sample['input'].unsqueeze(0).to(device)
 
 masks_path = Path('rise_masks.npy')
-explainer = SegmentationRISE(model, (240, 240), device, batch_size)
+explainer = SegmentationRISE(model, (240, 240), device)
 if not masks_path.exists():
     explainer.generate_masks(N=3000, s=8, p1=0.1, savepath=masks_path)
 else:

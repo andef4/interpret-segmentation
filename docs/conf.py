@@ -54,3 +54,4 @@ html_theme = 'sphinx_rtd_theme'
 # html_static_path = ['_static']
 
 autodoc_mock_imports = ['torch', 'torchvision']
+autodoc_member_order = 'bysource'
