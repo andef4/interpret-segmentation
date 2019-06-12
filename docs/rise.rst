@@ -80,6 +80,8 @@ Class documentation
 -------------------
 .. autoclass:: interpret_segmentation.rise.SegmentationRISE
    :members:
+   :special-members:
+
 
 .. autoclass:: interpret_segmentation.rise.RISEResult
    :members:

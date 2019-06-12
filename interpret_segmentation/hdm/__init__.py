@@ -91,7 +91,7 @@ class HDMResult:
 
 class HausdorffDistanceMasks:
     """
-    HausdorffDistanceMasks class
+    HausdorffDistanceMasks explainer class.
     """
     def __init__(self, image_width, image_height):
         """

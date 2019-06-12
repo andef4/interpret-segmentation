@@ -72,7 +72,7 @@ Example
     # apply masks and calculate distances
     result = explainer.explain(model, image, segment, device)
 
-    # generate
+    # generate circle map visualizations
     raw = result.circle_map(hdm.RAW, color_map='Blues')
     better = result.circle_map(hdm.BETTER_ONLY, color_map='Greens')
     worse = result.circle_map(hdm.WORSE_ONLY, color_map='Reds')
@@ -88,6 +88,8 @@ Class documentation
 -------------------
 .. autoclass:: interpret_segmentation.hdm.HausdorffDistanceMasks
    :members:
+   :special-members: __init__
+
 
 .. autoclass:: interpret_segmentation.hdm.HDMResult
    :members:

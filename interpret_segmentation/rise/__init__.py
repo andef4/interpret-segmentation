@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 class RISEResult:
     """
-    Instance returned by :func:`~interpret_segmentation.rise.SegmentationRISE.forward`.
+    Class returned by :func:`~interpret_segmentation.rise.SegmentationRISE.forward`.
     """
     def __init__(self, saliencies):
         self.saliencies = saliencies
@@ -41,7 +41,7 @@ class SegmentationRISE(nn.Module):
         Constructor.
         The model needs to reside on the device given as a parameter to this method.
 
-        :param model: A PyTorch module
+        :param model: Neural network model (PyTorch module)
         :param input_size: Tuple of image width and height
         :param device: The PyTorch device
         """
@@ -84,7 +84,7 @@ class SegmentationRISE(nn.Module):
         """
         Load masks saved by :func:`~interpret_segmentation.SegmentationRISE.generate_masks`.
 
-        :param filepath:
+        :param filepath: Path to the .npy mask file
         """
         self.masks = np.load(filepath)
         self.masks = torch.from_numpy(self.masks).float().to(self.device)
