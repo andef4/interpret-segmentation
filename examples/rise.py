@@ -33,24 +33,23 @@ if not masks_path.exists():
 else:
     explainer.load_masks(masks_path)
 
-saliencies = None
 with torch.set_grad_enabled(False):
-    saliencies = explainer(image)
+    result = explainer(image)
 
-print('Saliency map, Saliency map overlayed on binarized network output (max)')
-
-merged = torch.cat(saliencies)
-maxed = torch.max(merged, dim=0)[0]
+# Saliency map, Saliency map overlayed on binarized network output (max)
+rise_max = result.max()
 _, plots = plt.subplots(1, 2, figsize=(10, 5))
-plots[0].imshow(maxed.cpu(), cmap='jet')
-plots[1].imshow(output)
-plots[1].imshow(maxed.cpu(), cmap='jet', alpha=0.5)
+plots[0].imshow(rise_max, cmap='jet')
+plots[1].imshow(sample['input'].squeeze())
+plots[1].imshow(rise_max, cmap='jet', alpha=0.5)
 plt.savefig('rise_max.png')
+print('examples/rise_max.png generated')
 
-print('Saliency map, Saliency map overlayed on binarized network output (mean)')
-mean = torch.mean(merged, dim=0)
+# Saliency map, Saliency map overlayed on binarized network output (mean)
+rise_mean = result.mean()
 _, plots = plt.subplots(1, 2, figsize=(10, 5))
-plots[0].imshow(mean.cpu(), cmap='jet')
-plots[1].imshow(output)
-plots[1].imshow(mean.cpu(), cmap='jet', alpha=0.5)
+plots[0].imshow(rise_mean, cmap='jet')
+plots[1].imshow(sample['input'].squeeze())
+plots[1].imshow(rise_mean, cmap='jet', alpha=0.5)
 plt.savefig('rise_mean.png')
+print('examples/rise_mean.png generated')

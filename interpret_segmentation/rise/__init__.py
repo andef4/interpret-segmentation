@@ -7,6 +7,17 @@ from skimage.transform import resize
 from tqdm import tqdm
 
 
+class RISEResult:
+    def __init__(self, saliencies):
+        self.saliencies = saliencies
+
+    def max(self):
+        return torch.max(self.saliencies, dim=0)[0].cpu().numpy()
+
+    def mean(self):
+        return torch.mean(self.saliencies, dim=0).cpu().numpy()
+
+
 class SegmentationRISE(nn.Module):
     def __init__(self, model, input_size, device, gpu_batch=100):
         super(SegmentationRISE, self).__init__()
@@ -82,4 +93,6 @@ class SegmentationRISE(nn.Module):
             sal = sal.view((CL, H, W))
             sal /= mask_count
             saliencies.append(sal)
-        return saliencies
+
+        merged = torch.cat(saliencies)
+        return RISEResult(merged)
