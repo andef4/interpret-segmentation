@@ -26,7 +26,14 @@ class HDMResult:
 
     def distances(self, result_type):
         """
-        distances method
+        Returns distances as a 2D matrix. Every matrix entry corresponds to one applied mask.
+
+        * hdm.RAW: The raw Hausdorff Distance
+        * hdm.BETTER_ONLY: Only distances where the occlusion by the mask increased the accuracy of the output.
+        * hdm.WORSE_ONLY: Only distances where the occlusion by the mask decreased the accuracy of the output.
+
+        :param result_type: hdm.RAW, hdm.BETTER_ONLY, hdm.WORSE_ONLY
+        :return: numpy 2D matrix
         """
         if result_type == RAW:
             return self.results
@@ -39,7 +46,15 @@ class HDMResult:
 
     def circle_map(self, result_type, color_map='Reds'):
         """
-        circle_map method
+        Generates the Hausdorff Distance Mask visualization.
+
+        * hdm.RAW: The raw Hausdorff Distance
+        * hdm.BETTER_ONLY: Only distances where the occlusion by the mask increased the accuracy of the output.
+        * hdm.WORSE_ONLY: Only distances where the occlusion by the mask decreased the accuracy of the output.
+
+        :param result_type: hdm.RAW, hdm.BETTER_ONLY, hdm.WORSE_ONLY
+        :param color_map: A matplotlib color map
+        :return: PIL image
         """
         distances = self.distances(result_type)
         normalized = distances - distances.min()

@@ -31,6 +31,7 @@ setuptools.setup(
             'flake8',
             'pre-commit',
             'sphinx',
+            'sphinx_rtd_theme',
         ]
     }
 )
