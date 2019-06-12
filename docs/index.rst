@@ -43,10 +43,3 @@ The examples use the testnet dataset, which was specifically built as a showcase
 
    examples
    testnet
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
