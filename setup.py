@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="interpret_segmentation",
-    version="0.0.3",
+    version="1.0.0",
     author="Fabio Anderegg",
     author_email="andef4@bfh.ch",
     description="Interpreing image segmentation models",
