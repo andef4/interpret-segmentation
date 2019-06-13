@@ -18,7 +18,7 @@ class RISEResult:
         """
         Merges the per pixel saliency map into one map using the ``torch.max()`` method.
 
-        :return: 2D saliency map
+        :return: 2D saliency map (PyTorch tensor)
         """
         return torch.max(self.saliencies, dim=0)[0].cpu().numpy()
 
@@ -26,7 +26,7 @@ class RISEResult:
         """
         Merges the per pixel saliency map into one map using the ``torch.mean()`` method.
 
-        :return: 2D saliency map
+        :return: 2D saliency map (PyTorch tensor)
         """
         return torch.mean(self.saliencies, dim=0).cpu().numpy()
 
@@ -43,7 +43,7 @@ class SegmentationRISE(nn.Module):
 
         :param model: Neural network model (PyTorch module)
         :param input_size: Tuple of image width and height
-        :param device: The PyTorch device
+        :param device: PyTorch device
         """
         super(SegmentationRISE, self).__init__()
         self.model = model
@@ -55,8 +55,9 @@ class SegmentationRISE(nn.Module):
         Generate rise masks.
 
         :param N: Mask count
-        :param s: Distance between mask lines
-        :param p1: Cutoff where to set mask. Between 0 and 1.0, 1.0 means masks on the whole image, 0 means no masks.
+        :param s: Distance between mask peaks
+        :param p1: Threshold where to set mask. Between 0.0 and 1.0, 1.0 means masks on the whole image, \
+        0.0 means no masks.
         :param savepath: Where to save the masks after generation, path to .npy file.
         """
         cell_size = np.ceil(np.array(self.input_size) / s)
@@ -82,7 +83,7 @@ class SegmentationRISE(nn.Module):
 
     def load_masks(self, filepath):
         """
-        Load masks saved by :func:`~interpret_segmentation.SegmentationRISE.generate_masks`.
+        Load masks from file saved by :func:`~interpret_segmentation.rise.SegmentationRISE.generate_masks`.
 
         :param filepath: Path to the .npy mask file
         """
@@ -93,7 +94,13 @@ class SegmentationRISE(nn.Module):
     def forward(self, x):
         """
         Generate the saliency map for image x. Because this class is a PyTorch module, this method
-        is never called directly and used as a Functor: ``explainer = SegmentationRISE(...); explainer(image)``.
+        is never called directly but instead the class instance is used as a Functor:
+
+        .. code-block:: python
+
+            explainer = SegmentationRISE(...)
+            ...
+            explainer(image)
 
         :param x: The input image as a 2D numpy array
         :return: An instance of :class:`~interpret_segmentation.rise.RISEResult`
