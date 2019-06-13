@@ -28,7 +28,7 @@ Examples
 
    The right shape in the input is a circle. Therefore the triangle is segmented in the output.
 
-A good interpretability method should not only show an importance on the segment output (circle and cross), but also on the shapes on the right (circle, cross).
+A good interpretability method should not only show the importance of the segment output (circle and cross), but also on the shapes on the right (circle, cross).
 
 Model
 -----
