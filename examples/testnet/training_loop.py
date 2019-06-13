@@ -3,7 +3,6 @@ Training loop from https://github.com/andef4/deeplearning (MIT licensed), origin
 https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html#model-training-and-validation-code
 BSD license
 """
-import os
 import torch
 from pathlib import Path
 from datetime import datetime
@@ -11,13 +10,15 @@ from scipy.spatial.distance import directed_hausdorff, dice
 import numpy as np
 
 
-def train_model(name, model, dataloaders, criterion, optimizer, device, num_epochs=25):
-    if not os.path.exists('results'):
-        os.mkdir('results')
-    results_file = Path(f'results/{name}.txt')
+def train_model(path, name, model, dataloaders, criterion, optimizer, device, num_epochs=25):
+    result_dir = path / 'results'
+    if not result_dir.exists():
+        result_dir.mkdir()
+    results_file = Path(result_dir / f'{name}.txt')
     if results_file.exists():
-        raise Exception('Result file already exists, please change name')
+        raise Exception(f'Result file examples/testnet/results/{results_file.name} already exists, please change name')
     f = open(results_file, 'w', buffering=1)
+    print(f'Writing results to stdout and examples/testnet/results/{results_file.name}')
     f.write('TL: training loss, VL: validation loss\n')
     f.write('THD: training hausdorf distance, VHD: validation hausdorf distance\n')
     f.write('TDD: training dice distance, VDD: validation dice distance\n')
@@ -90,4 +91,4 @@ def train_model(name, model, dataloaders, criterion, optimizer, device, num_epoc
 
             # save model to disk
             if phase == 'val':
-                torch.save(model.state_dict(), f'models/{name}_{epoch:04d}.pth')
+                torch.save(model.state_dict(), path / f'{name}_{epoch:04d}.pth')
