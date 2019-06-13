@@ -1,3 +1,5 @@
+import os
+import inspect
 from interpret_segmentation import hdm
 import matplotlib.pyplot as plt
 import torch
@@ -7,16 +9,18 @@ from torchvision import transforms
 from pathlib import Path
 from skimage.feature import canny
 
+path = Path(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = UNet(in_channels=1, out_channels=1)
-state_dict = torch.load('testnet/testnet.pth', map_location=device)
+state_dict = torch.load(path / 'testnet' / 'testnet.pth', map_location=device)
 model.load_state_dict(state_dict)
 model = model.to(device)
 transform = transforms.Compose([
     transforms.Normalize([0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5])
 ])
-dataset = TestnetDataset(Path('testnet/dataset/'), transform)
+
+dataset = TestnetDataset(path / 'testnet' / 'dataset', transform)
 
 
 sample = dataset.get_sample('1')
@@ -37,14 +41,17 @@ edges = canny(image[0].numpy(), sigma=0.01)
 plt.imshow(raw)
 plt.imshow(edges, alpha=0.5, cmap='gray_r')
 plt.suptitle(f'Raw')
-plt.savefig('hdm_raw.png')
+plt.savefig(path / 'hdm_raw.png')
+print('hdm_raw.png generated')
 
 plt.imshow(better)
 plt.imshow(edges, alpha=0.5, cmap='gray_r')
 plt.suptitle(f'Better')
-plt.savefig('hdm_better.png')
+plt.savefig(path / 'hdm_better.png')
+print('hdm_better.png generated')
 
 plt.imshow(worse)
 plt.imshow(edges, alpha=0.5, cmap='gray_r')
 plt.suptitle(f'Worse')
-plt.savefig('hdm_worse.png')
+plt.savefig(path / 'hdm_worse.png')
+print('hdm_worse.png generated')

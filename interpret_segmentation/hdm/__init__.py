@@ -91,7 +91,7 @@ class HDMResult:
 
 class HausdorffDistanceMasks:
     """
-    HausdorffDistanceMasks class
+    HausdorffDistanceMasks explainer class.
     """
     def __init__(self, image_width, image_height):
         """
@@ -108,7 +108,7 @@ class HausdorffDistanceMasks:
         Generate the masks for the explainer. A circle_size of 15 pixels and an offset of 5 pixel
         work good on a 240x240 image.
 
-        :param circle_size: How big the circle size on the mask is in pixels
+        :param circle_size: Diameter in pixels of the circles drawn onto the image
         :param offset: The distance in pixel between every drawn circle
         :param normalize: Normalize generated masks to mean 0.5
         """
@@ -183,7 +183,7 @@ class HausdorffDistanceMasks:
     def apply_mask(self, image, mask):
         """
         Apply a mask on an image.
-        By default, this does a `torch.min(image, mask)`, but can be overwritten to do something else.
+        By default, this does a ``torch.min(image, mask)``, but can be overwritten to do something else.
 
         :param image: The input image, 2D numpy array
         :param mask: The mask, 2D numpy array

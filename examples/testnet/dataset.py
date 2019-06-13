@@ -1,7 +1,6 @@
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 import os
-from pathlib import Path
 from PIL import Image
 
 
@@ -34,12 +33,12 @@ class TestnetDataset(Dataset):
         return len(self.files)
 
 
-def load_dataset(batch_size):
+def load_dataset(path, batch_size):
     transform = transforms.Compose([
         transforms.Normalize([0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5])
     ])
-    train_dataset = TestnetDataset(Path('testnet'), transform=transform, test=False)
-    test_dataset = TestnetDataset(Path('testnet'), transform=transform, test=True)
+    train_dataset = TestnetDataset(path, transform=transform, test=False)
+    test_dataset = TestnetDataset(path, transform=transform, test=True)
     train_loader = DataLoader(train_dataset, batch_size=batch_size)
     test_loader = DataLoader(test_dataset, batch_size=batch_size)
     return train_loader, test_loader

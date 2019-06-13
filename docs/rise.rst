@@ -4,15 +4,14 @@ RISE
 
 Introduction
 ------------
-RISE (Randomized Input Sampling for Explanation) is a black box interpretability method originally built for image classification tasks.
-The original paper is available
-here: https://arxiv.org/abs/1806.07421.
+RISE (Randomized Input Sampling for Explanation) is a black box interpretability method built for image classification tasks.
+The original paper is available here: https://arxiv.org/abs/1806.07421.
 
 RISE generates masks that are applied to the input images by multiplying the mask with the input image pixel values:
 
 .. image:: images/rise.png
 
-The modified images are passed through the neural network and their classification scores for a specific
+The modified images are passed through the neural network and the classification score for a specific
 class are recorded. A high classification score for a class on a modified input image means that the pixels
 preserved by the mask are important for the classification.
 
@@ -20,16 +19,28 @@ To visualize the results, the classification scores and masks are summed up and 
 
 Modifications for image segmentation interpretability
 -----------------------------------------------------
-RISE was built for image classification tasks. To make it work with segmentation, we interpret every pixel of the output
-segment as its own class. We let RISE generate a saliency map for every one of these pixels and then merge the
+RISE was built for image classification tasks. To make it work with segmentation, we handle every pixel of the output
+segment as if they are  their own distinct class. We let RISE generate a saliency map for every one of these pixels and then merge the
 generated saliency maps. Currently, the RISEResult class supports two merge methods: ``max()`` and ``mean()``.
 
+.. figure:: images/rise_max.png
+   :scale: 100 %
+
+   Saliency map generated using the max function overlaid on a testnet input image.
+
+.. figure:: images/rise_mean.png
+   :scale: 100 %
+
+   Saliency map generated using the mean function overlaid on a testnet input image.
 
 Example
 -------
 .. code-block:: python
 
-    from interpret_segmentation import hdm
+    from interpret_segmentation.rise import SegmentationRISE
+    import torch
+    import matplotlib.pyplot as plt
+    from pathlib import Path
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -46,7 +57,7 @@ Example
     image = ...
 
     # initialize the explainer with image width and height
-    explainer = SegmentationRISE(model, (240, 240), device, batch_size)
+    explainer = SegmentationRISE(model, (240, 240), device)
 
     # load or generate RISE masks
     masks_path = Path('rise_masks.npy')
@@ -71,6 +82,8 @@ Class documentation
 -------------------
 .. autoclass:: interpret_segmentation.rise.SegmentationRISE
    :members:
+   :special-members:
+
 
 .. autoclass:: interpret_segmentation.rise.RISEResult
    :members:

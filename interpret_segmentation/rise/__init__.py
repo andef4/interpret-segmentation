@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 class RISEResult:
     """
-    Instance returned by :func:`~interpret_segmentation.SegmentationRISE.forward`.
+    Class returned by :func:`~interpret_segmentation.rise.SegmentationRISE.forward`.
     """
     def __init__(self, saliencies):
         self.saliencies = saliencies
@@ -18,7 +18,7 @@ class RISEResult:
         """
         Merges the per pixel saliency map into one map using the ``torch.max()`` method.
 
-        :return: 2D saliency map
+        :return: 2D saliency map (PyTorch tensor)
         """
         return torch.max(self.saliencies, dim=0)[0].cpu().numpy()
 
@@ -26,7 +26,7 @@ class RISEResult:
         """
         Merges the per pixel saliency map into one map using the ``torch.mean()`` method.
 
-        :return: 2D saliency map
+        :return: 2D saliency map (PyTorch tensor)
         """
         return torch.mean(self.saliencies, dim=0).cpu().numpy()
 
@@ -41,9 +41,9 @@ class SegmentationRISE(nn.Module):
         Constructor.
         The model needs to reside on the device given as a parameter to this method.
 
-        :param model: A PyTorch module
+        :param model: Neural network model (PyTorch module)
         :param input_size: Tuple of image width and height
-        :param device: The PyTorch device
+        :param device: PyTorch device
         """
         super(SegmentationRISE, self).__init__()
         self.model = model
@@ -55,10 +55,10 @@ class SegmentationRISE(nn.Module):
         Generate rise masks.
 
         :param N: Mask count
-        :param s: Distance between mask lines
-        :param p1: Cutoff where to set mask. Between 0 and 1.0, 1.0 means masks on the whole image, 0 means no masks.
+        :param s: Distance between mask peaks
+        :param p1: Threshold where to set mask. Between 0.0 and 1.0, 1.0 means masks on the whole image, \
+        0.0 means no masks.
         :param savepath: Where to save the masks after generation, path to .npy file.
-        :return:
         """
         cell_size = np.ceil(np.array(self.input_size) / s)
         up_size = (s + 1) * cell_size
@@ -83,10 +83,9 @@ class SegmentationRISE(nn.Module):
 
     def load_masks(self, filepath):
         """
-        Load masks saved by :func:`~interpret_segmentation.SegmentationRISE.generate_masks`.
+        Load masks from file saved by :func:`~interpret_segmentation.rise.SegmentationRISE.generate_masks`.
 
-        :param filepath:
-        :return:
+        :param filepath: Path to the .npy mask file
         """
         self.masks = np.load(filepath)
         self.masks = torch.from_numpy(self.masks).float().to(self.device)
@@ -95,10 +94,16 @@ class SegmentationRISE(nn.Module):
     def forward(self, x):
         """
         Generate the saliency map for image x. Because this class is a PyTorch module, this method
-        is never called directly and used as a Functor: ``explainer = SegmentationRISE(...); explainer(image)``.
+        is never called directly but instead the class instance is used as a Functor:
+
+        .. code-block:: python
+
+            explainer = SegmentationRISE(...)
+            ...
+            explainer(image)
 
         :param x: The input image as a 2D numpy array
-        :return:
+        :return: An instance of :class:`~interpret_segmentation.rise.RISEResult`
         """
         mask_count = self.N
         _, _, H, W = x.size()
@@ -123,7 +128,7 @@ class SegmentationRISE(nn.Module):
             # run generated images through the model
             p = []
             for i in range(0, mask_count):
-                output_mask = self.model(stack[i:min(i, mask_count)])
+                output_mask = self.model(stack[i:min(i + 1, mask_count)])
                 pixel_classes = []
                 for x, y in current_pixels:
                     pixel_classes.append(output_mask[0][x][y])
